@@ -11,11 +11,11 @@ func TestHttp(t *testing.T) {
 
     s := Search{Artist: "Aesop Rock", Song: "None Shall Pass"}
 
-    r, err = s.SearchLyricDirect()
+    r, err = s.SearchLyricDirect(60)
 
     t.Errorf("%+v", r)
 
-    r, err = s.SearchLyric()
+    r, err = s.SearchLyric(60)
 
     if err != nil {
         t.Fatal(err)

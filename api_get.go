@@ -22,13 +22,17 @@ const (
 
 var throttle chan (int)
 
-func get(function string, query string) (clr ChartLyricsResult, err error) {
+func get(function string, query string, t ...int) (clr ChartLyricsResult, err error) {
 
-	if throttle == nil {
-		throttle = make(chan int)
-	} else {
-		<-throttle
-	}
+    var throttle_enabled = len(t) > 0 && t[0] > 0
+
+	if throttle_enabled {
+        if throttle == nil {
+            throttle = make(chan int)
+        } else {
+            <-throttle
+        }
+    }
 
 	resp, err := http.Get(fmt.Sprintf(addr, function, query))
 	if err != nil {
@@ -46,24 +50,26 @@ func get(function string, query string) (clr ChartLyricsResult, err error) {
 		return
 	}
 
-	go func() {
-		time.Sleep(time.Duration(20 * time.Second))
-		throttle <- 1
-	}()
+    if throttle_enabled {
+        go func() {
+            time.Sleep(time.Duration(int64(t[0]) * int64(time.Second)))
+            throttle <- 1
+        }()
+    }
 
 	cleanupSearchLyricResult(&clr.SearchLyricResult)
 
 	return
 }
 
-func HttpSearchLyric(args string) (ChartLyricsResult, error) {
-	return get(_SEARCH_LYRIC, args)
+func HttpSearchLyric(args string, t ...int) (ChartLyricsResult, error) {
+	return get(_SEARCH_LYRIC, args, t...)
 }
 
-func HttpSearchLyricDirect(args string) (ChartLyricsResult, error) {
-	return get(_SEARCH_LYRIC_DIRECT, args)
+func HttpSearchLyricDirect(args string, t ...int) (ChartLyricsResult, error) {
+	return get(_SEARCH_LYRIC_DIRECT, args, t...)
 }
 
-func HttpGetLyric(args string) (ChartLyricsResult, error) {
-	return get(_GET_LYRIC, args)
+func HttpGetLyric(args string, t ...int) (ChartLyricsResult, error) {
+	return get(_GET_LYRIC, args, t...)
 }

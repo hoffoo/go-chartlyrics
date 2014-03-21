@@ -35,33 +35,33 @@ type SearchLyricResult struct {
 // querying the api data logic
 // ---------------------------------------------------------
 
-func GetLyric(lyricId, lyricCheckSum string) (clr ChartLyricsResult, err error) {
+func GetLyric(lyricId, lyricCheckSum string, t ...int) (clr ChartLyricsResult, err error) {
 
     err = searchValid(checkEmptyStrings, lyricId, lyricCheckSum)
     if err != nil {
         return
     }
 
-    return HttpGetLyric(toQuery("lyricId", lyricId, "lyricChecksum", lyricCheckSum))
+    return HttpGetLyric(toQuery("lyricId", lyricId, "lyricChecksum", lyricCheckSum), t...)
 }
 
-func SearchLyric(artist, song string) (clr ChartLyricsResult, err error) {
+func SearchLyric(artist, song string, t ...int) (clr ChartLyricsResult, err error) {
 
     err = searchValid(checkEmptyStrings, artist, song)
     if err != nil {
         return
     }
 
-    return HttpSearchLyric(toQuery("artist", artist, "song", song))
+    return HttpSearchLyric(toQuery("artist", artist, "song", song), t...)
 }
 
-func SearchLyricDirect(artist, song string) (clr ChartLyricsResult, err error) {
+func SearchLyricDirect(artist, song string, t ...int) (clr ChartLyricsResult, err error) {
     err = searchValid(checkEmptyStrings, artist, song)
     if err != nil {
         return
     }
 
-    return HttpSearchLyricDirect(toQuery("artist", artist, "song", song))
+    return HttpSearchLyricDirect(toQuery("artist", artist, "song", song), t...)
 }
 
 // ---------------------------------------------------------
@@ -79,16 +79,16 @@ type Search struct {
 // Search methods
 // ---------------------------------------------------------
 
-func (s *Search) SearchLyric() (clr ChartLyricsResult, err error) {
-    return SearchLyric(s.Artist, s.Song)
+func (s *Search) SearchLyric(t ...int) (clr ChartLyricsResult, err error) {
+    return SearchLyric(s.Artist, s.Song, t...)
 }
 
-func (s *Search) SearchLyricDirect() (clr ChartLyricsResult, err error) {
-    return SearchLyricDirect(s.Artist, s.Song)
+func (s *Search) SearchLyricDirect(t ...int) (clr ChartLyricsResult, err error) {
+    return SearchLyricDirect(s.Artist, s.Song, t...)
 }
 
-func (s *Search) GetLyric() (clr ChartLyricsResult, err error) {
-    return GetLyric(s.LyricId, s.LyricChecksum)
+func (s *Search) GetLyric(t ...int) (clr ChartLyricsResult, err error) {
+    return GetLyric(s.LyricId, s.LyricChecksum, t...)
 }
 
 // ---------------------------------------------------------
